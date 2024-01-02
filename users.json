@@ -10,5 +10,11 @@
     "username": "rockdwayne",
     "email": "rock@frog.com",
     "password": "$2b$10$Zy8LhbojOAv3JZDMtga3FuMzzqZKmQAeo7j3KrMzgZS8YNIMTaXQC"
+  },
+  {
+    "id": 3,
+    "username": "akon",
+    "email": "akon@akon.com",
+    "password": "$2b$10$iu4Zcl.Qo.vVOn3XUAjoOepHo.qR8ErCm66HDPyChlX.YPsN5v6tS"
   }
 ]

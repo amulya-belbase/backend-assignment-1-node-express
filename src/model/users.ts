@@ -1,9 +1,9 @@
 import { promises as fs } from "fs";
 import { SignupInfo,LoginInfo } from "../interfaces/userInteface";
-import config from "../config";
 import * as bcrypt from "bcrypt";
-import * as jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken, pushIntoRefresh } from "../middleware/authToken";
+import { userLogger } from "../utils/logger";
+
 
 // checks for the existence of the user in users.json file
 async function checkUser(email: string) {
@@ -26,8 +26,11 @@ async function checkUser(email: string) {
 export async function signup(result: SignupInfo) {
   try {
     const checkData = await checkUser(result.email);
-    if (checkData !== undefined) return "User already exists";
-
+    // if (checkData !== undefined) return "User already exists";
+    if (checkData !== undefined) {
+      userLogger.log('error','User already exists');
+      return "User already exists";
+    }
     const jsonString = await fs.readFile("users.json", "utf-8");
     let existingData = JSON.parse(jsonString); // Parse the existing JSON data
 
@@ -52,6 +55,7 @@ export async function signup(result: SignupInfo) {
 
     // Write the updated JSON data back to the file
     fs.writeFile("users.json", updatedJson, "utf8");
+    userLogger.log('info','New user added');
 
     const user = { email: result.email, id: userData.id };
 
@@ -67,10 +71,15 @@ export async function signup(result: SignupInfo) {
 export async function login(result: LoginInfo) {
     try {
         const checkData = await checkUser(result.email);
-        if (checkData === undefined) return ({message: "User doesn't exist"});
-    
+        // if (checkData === undefined) return ({message: "User doesn't exist"});
+        if (checkData === undefined) {
+          userLogger.log('error','Non existent user');
+          return ({message: "User doesn't exist"});
+        }
+
         const matchPassword = await bcrypt.compare(result.password, checkData.password);
         if(!matchPassword){
+          userLogger.log('error','Incorrect password');
             return ({message: "Invalid Credentials"});
         }
 
@@ -80,40 +89,11 @@ export async function login(result: LoginInfo) {
         const accessToken = generateAccessToken(userData);
         const refreshToken = generateRefreshToken(userData);
         pushIntoRefresh(refreshToken);
-        
+        userLogger.log('info','Login success');
+
         return { accessToken, refreshToken};
       } catch (err) {
         return ({message: "Internal server error"});
       }
 }
 
-
-
-
-// // Secret keys for tokens (should be kept secure)
-
-// // Middleware to verify access token
-
-
-// // Endpoint to refresh access token using refresh token
-// app.post('/refresh-token', (req, res) => {
-//   const { refreshToken } = req.body;
-
-//   if (!refreshToken) {
-//     return res.sendStatus(401);
-//   }
-
-//   jwt.verify(refreshToken, REFRESH_SECRET_KEY, (err, user) => {
-//     if (err) {
-//       return res.sendStatus(403);
-//     }
-
-//     const accessToken = generateAccessToken({ userId: user.userId, username: user.username });
-//     res.json({ accessToken });
-//   });
-// });
-
-// // Function to generate access token
-// const generateAccessToken = (user) => {
-//   return jwt.sign(user, accessTokenSecret, { expiresIn: '15m' });
-// };
