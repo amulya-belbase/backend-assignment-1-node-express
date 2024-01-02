@@ -3,7 +3,6 @@ import {authenticateToken, refreshActionToken} from "../middleware/authToken";
 import todoRoutes from "./todo";
 import usersRoutes from "./users";
 
-
 const router = Router();
 
 

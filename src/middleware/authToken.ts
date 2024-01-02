@@ -45,8 +45,12 @@ export async function authenticateToken(
     }
   }
 }
+// export const generateAccessToken = (user: object) => {
+//   return jwt.sign(user, config.ACCESS_TOKEN_KEY, { expiresIn: "15s" });
+// };
+
 export const generateAccessToken = (user: object) => {
-  return jwt.sign(user, config.ACCESS_TOKEN_KEY, { expiresIn: "15s" });
+  return jwt.sign(user, config.ACCESS_TOKEN_KEY);
 };
 
 export const generateRefreshToken = (user: object) => {

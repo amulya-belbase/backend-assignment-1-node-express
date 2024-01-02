@@ -1,4 +1,5 @@
 import { promises as fs } from "fs";
+import { StatusCodes } from "http-status-codes";
 
 
 // using async-await because readFile is asynchronous operation when read from another file
@@ -91,10 +92,10 @@ export async function deleteTodoById(id: number, userId: number) {
 
     if (updatedData.length < existingData.length) {
       await fs.writeFile('todo.json', JSON.stringify(updatedData, null, 2), 'utf-8');
-      return 'Task deleted successfully';
+      return 200;
     } else {
-      return "This task doesn't exist or doesn't belong to the user";
-    }
+      return 404;
+      }
   } catch (error) {
     return error;
   }
