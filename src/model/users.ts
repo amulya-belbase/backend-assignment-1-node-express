@@ -61,6 +61,7 @@ export async function signup(result: SignupInfo) {
 
     const token = generateAccessToken(user);
     return { result, token };
+
   } catch (err) {
     return "Internal server error";
   }
@@ -86,12 +87,12 @@ export async function login(result: LoginInfo) {
         const userData = { email: result.email, id: checkData.id };
 
         // FOR JWT
-        const accessToken = generateAccessToken(userData);
-        const refreshToken = generateRefreshToken(userData);
-        pushIntoRefresh(refreshToken);
-        userLogger.log('info','Login success');
-
-        return { accessToken, refreshToken};
+        // const accessToken = generateAccessToken(userData);
+        // const refreshToken = generateRefreshToken(userData);
+        // pushIntoRefresh(refreshToken);
+        // userLogger.log('info','Login success');
+        return ("OK")
+        // return { accessToken, refreshToken};
       } catch (err) {
         return ({message: "Internal server error"});
       }
